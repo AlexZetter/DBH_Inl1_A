@@ -1,0 +1,113 @@
+body {
+  height: 95vh;
+}
+
+.loadWrapper {
+  height: 50px;
+  animation: rotate 3s linear infinite;
+}
+
+.loadCircles {
+  background-color: red;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+
+.loadCircles:nth-child(2) {
+  background-color: violet;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#wrapper {
+  height: 700px;
+  display: flex;
+  flex-direction: row;
+}
+
+#paintingWindow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: space-evenly;
+  flex-wrap: wrap;
+  width: 60%;
+  height: 100%;
+  background-color: lightblue;
+  border: 1px solid black;
+}
+
+#listOfUsers {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  height: 100%;
+  background-color: grey;
+  position: relative;
+}
+
+.nameTags {
+  border: 1px solid black;
+  margin: 1px;
+}
+
+.selected {
+  background-color: yellow;
+}
+
+.mainUser {
+  border: 1px solid black;
+}
+.mainTester {
+  border: 1px solid black;
+}
+
+.pictureDivs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 250px;
+  height: 250px;
+  padding: 10px;
+}
+
+.pictureDivs > p {
+  word-wrap: break-word;
+}
+
+img {
+  height: 150px;
+  width: 150px;
+}
+
+.commonFavoritePictures {
+  border: 5px solid red;
+}
+
+.favoritePictures {
+  border: 5px solid green;
+}
+
+.loadingScreen {
+  background-color: rgba(0, 0, 0, 0.795);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: larger;
+  color: white;
+}
+
+.timer {
+  height: 50px;
+  font-size: 15px;
+}

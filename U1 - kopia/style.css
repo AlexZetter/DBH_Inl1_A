@@ -1,31 +1,14 @@
 body {
   height: 95vh;
-}
-
-.loadWrapper {
-  height: 50px;
-  animation: rotate 3s linear infinite;
-}
-
-.loadCircles {
-  background-color: red;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-}
-
-.loadCircles:nth-child(2) {
-  background-color: violet;
-}
-
-@keyframes rotate {
-  to {
-    transform: rotate(360deg);
-  }
+  width: 95vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #wrapper {
-  height: 700px;
+  height: 95%;
+  width: 95%;
   display: flex;
   flex-direction: row;
 }
@@ -33,22 +16,26 @@ body {
 #paintingWindow {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  align-items: space-evenly;
+  justify-content: center;
   flex-wrap: wrap;
-  width: 60%;
+  width: 80%;
   height: 100%;
   background-color: lightblue;
   border: 1px solid black;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 #listOfUsers {
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 20%;
   height: 100%;
   background-color: grey;
   position: relative;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 .nameTags {
@@ -73,18 +60,25 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
-  width: 250px;
-  height: 250px;
+  width: 200px;
+  height: 200px;
   padding: 10px;
+  background-color: white;
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+.pictureDivs > p {
+  text-align: center;
 }
 
 .pictureDivs > p {
   word-wrap: break-word;
 }
 
-img {
-  height: 150px;
-  width: 150px;
+.pictureDivs > img {
+  max-width: 50%;
+  max-height: 50%;
 }
 
 .commonFavoritePictures {

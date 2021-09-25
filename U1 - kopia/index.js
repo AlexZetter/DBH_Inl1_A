@@ -38,26 +38,13 @@ async function grabUsers() {
 }
 
 if (localStorage.length <= 0) {
+  ("hej");
   loadingBarPaintingsWindow();
 }
 
 setInterval(displayUsers, 30000);
 displayUsers();
 
-function loadingCircleTest() {
-  let loadingWrapper = document.createElement("div");
-  let loadingCircleOne = document.createElement("div");
-  let loadingCircleTwo = document.createElement("div");
-
-  loadingWrapper.classList.add("loadWrapper");
-  loadingCircleOne.classList.add("loadCircles");
-  loadingCircleTwo.classList.add("loadCircles");
-
-  document.querySelector("#listOfUsers").append(loadingWrapper);
-  loadingWrapper.append(loadingCircleOne);
-  loadingWrapper.append(loadingCircleTwo);
-}
-loadingCircleTest();
 function userListTimer() {
   let i = 29;
   let timer = document.createElement("div");
@@ -66,7 +53,7 @@ function userListTimer() {
   setInterval(() => {
     i--;
     timer.innerHTML = `Time until refresh: ${i}`;
-  }, 1000);
+  }, 3000);
 
   document.querySelector("#listOfUsers").append(timer);
   // setTimeout(() => {clearInterval(intervalID)}, 30000)
@@ -93,7 +80,7 @@ function loadingBarPaintings(domElement) {
 
   setTimeout(function () {
     blackWindowWithText.remove();
-  }, 2000);
+  }, 5000);
 }
 
 function loadingBarPaintingsWindow() {
@@ -301,9 +288,13 @@ async function displayPictures() {
     let favPromises = userFavs.map((favs) => grabPicture(favs));
 
     let response = await Promise.all(favPromises);
-    response.forEach((element) => createPictureDOM(element));
+    let sortedResponse = response.sort((a, b) => a.title > b.title);
+
+    sortedResponse.forEach((element) => createPictureDOM(element));
   } else {
-    arrayOfImages.forEach((images) => createPictureDOM(images));
+    let SortedarrayOfImages = arrayOfImages.sort((a, b) => a.title > b.title);
+
+    SortedarrayOfImages.forEach((images) => createPictureDOM(images));
   }
 }
 
@@ -319,17 +310,19 @@ function createPictureDOM(picture) {
     pictureButton.innerHTML = "Add";
     if (mainUserFavorites.includes(picture.objectID)) {
       pictureButton.innerHTML = "Remove";
+      pictureDivWrapper.classList.add("favoritePictures");
     }
 
     pictureButton.addEventListener("click", (e) => {
       if (e.target.innerHTML == "Add") {
-        addPictureToFavs(pictureID, e);
-
+        addPictureToFavs(pictureID, e.target.parentElement);
         loadingBarPaintings(e.target.parentElement);
+        e.target.parentElement.classList.add("favoritePictures");
         pictureButton.innerHTML = "Remove";
       } else {
         removePictureToFavs(pictureID);
         loadingBarPaintings(e.target.parentElement);
+        e.target.parentElement.classList.remove("favoritePictures");
         pictureButton.innerHTML = "Add";
       }
     });
@@ -353,7 +346,8 @@ function createPictureDOM(picture) {
   document.querySelector("#paintingWindow").append(pictureDivWrapper);
 }
 
-async function addPictureToFavs(pictureFavID, e) {
+//Adds a favorite painting by calling the api
+async function addPictureToFavs(pictureFavID, divWrapper) {
   let URL = await fetch(
     new Request(userURL, {
       method: `PATCH`,
@@ -363,17 +357,12 @@ async function addPictureToFavs(pictureFavID, e) {
       body: JSON.stringify({ id: mainUser, addFav: pictureFavID }),
     })
   );
-  if (URL.status == 200) {
-    window.alert("You have added a favorite");
-  }
-  if (URL.status == 409) {
-    window.alert("You have added too many favorites");
-    e.target.innerHTML = "Add";
-  }
+  errorHandler(URL.status, "add", divWrapper);
   displayUsers();
   console.log("Added Picture", pictureFavID);
 }
 
+//Removes a favorite painting by calling the api
 async function removePictureToFavs(pictureFavID) {
   let URL = await fetch(
     new Request(userURL, {
@@ -384,26 +373,24 @@ async function removePictureToFavs(pictureFavID) {
       body: JSON.stringify({ id: mainUser, removeFav: pictureFavID }),
     })
   );
-  if (URL.status == 200) {
-    window.alert("You have removed a favorite");
-  }
+
+  errorHandler(URL.status, "remove");
   displayUsers();
   console.log("Remove Picture", pictureFavID);
 }
 
-/*
-endpoint: mpp.erikpineiro.se/dbp/sameTaste/users.php
-method: PATCH
-headers: "Content-type": "application/json; charset=UTF-8"
-body: "{"id": user_id, “addFav”:image_id_x}"
-// This will add the id image_id_x to the user’s favs.
-// Note that image_id and user_id must be integers*/
-
-//displayPictures()
-/*
-Nycklarna vi är
-intresserade av är objectID (Mets id för denna bild), primaryImageSmall (url:et till själva jpg-filen), title (bildens titel, som ska
-användas i texten), artistDisplayName (används i texten också)
-
-
-*/
+//Handles all promise errors and displays an alert window
+function errorHandler(fetch, addOrRemove, divWrapper) {
+  if (fetch == 409) {
+    divWrapper.classList.remove("favoritePictures");
+    window.alert("You have added too many favorites");
+  } else if (fetch == 400) {
+    window.alert("Bad request");
+  } else if (fetch == 404) {
+    window.alert("Not found");
+  } else if (fetch == 200 && addOrRemove == "remove") {
+    window.alert("Removal successful");
+  } else if (fetch == 200 && addOrRemove == "add") {
+    window.alert("Add successful");
+  }
+}
